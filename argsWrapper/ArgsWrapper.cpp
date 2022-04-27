@@ -74,16 +74,18 @@ ArgsWrapper::ArgsWrapper(int argc, char const *argv[])
         if(strcmp(argv[i], "-t") == 0)
         {
             if(!isProtoSet)
-                proto.proto = Proto::TCP;
+                proto = Proto::TCP;
             else
-                std::cout << "The protocol is already set with " << proto.toString() << std::endl;
+                std::cout << "The protocol is already set with " 
+                << (proto == Proto::TCP ? "TCP" : "UDP") << std::endl;
         }
         if(strcmp(argv[i], "-u") == 0)
         {
             if(!isProtoSet)
-                proto.proto = Proto::UDP;
+                proto = Proto::UDP;
             else
-                std::cout << "The protocol is already set with " << proto.toString() << std::endl;
+                std::cout << "The protocol is already set with " 
+                << (proto == Proto::TCP ? "TCP" : "UDP") << std::endl;
 
         }
         if(strcmp(argv[i], "-i") == 0)
@@ -148,7 +150,7 @@ void ArgsWrapper::printStartMsg()
 {
     std::cout << "Run with:" << std::endl;
     std::cout << "\t-mode " << mode.toString() << std::endl;
-    std::cout << "\t-protocol " << proto.toString() << std::endl;
+    std::cout << "\t-protocol " << (proto == Proto::TCP ? "TCP" : "UDP") << std::endl;
     std::cout << "\t-ip " << addr_ip << std::endl;
     std::cout << "\t-p " << port << std::endl;
 }

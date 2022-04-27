@@ -24,13 +24,13 @@ public:
 
     uint16_t getPort() {return port;}
 
-    Proto getProtocol() {return proto.proto;};
+    Proto getProtocol() {return proto;};
 
     std::string getIpAddr() {return addr_ip;};
 
 private:
-    RunMode mode        {Mode::SERVER};
-    Protocol proto      {Proto::UDP};
+    RunMode     mode    {Mode::SERVER};
+    Proto       proto   {Proto::UDP};
     std::string addr_ip {"127.0.0.1"};
-    uint16_t port       {1024};
+    uint16_t    port    {1024};
 };
