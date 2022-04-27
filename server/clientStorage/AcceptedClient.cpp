@@ -26,6 +26,7 @@ void AcceptedClient::listenAndWrite()
 		}
 		if (nread == 0) {
 			printf("EOF occured\n");
+			status = Status::STOP;
 		}
 		else
 		{

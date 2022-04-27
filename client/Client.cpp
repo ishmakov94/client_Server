@@ -10,25 +10,32 @@ Client::Client(std::string ip_addr, uint16_t port, Proto proto)
 
 Client::~Client()
 {
-	delete buffer;
+	delete socket;
 }
 
 void Client::run()
 {
 	bool status = true;
-	std::thread writterThread(&Client::writter, this, std::ref(status));
-	std::thread listenerThread(&Client::listener, this, std::ref(status));
-	writterThread.join();
-	listenerThread.join();
+	std::thread writterAndListenerThread([&status, this]()
+	{
+		while(status)
+		{
+			writter(status);
+			status = listener(status);
+		}
+	});
+	writterAndListenerThread.join();
 }
 
 void Client::writter(bool& status)
 {
-	while(status)
+	int res = -1;
+	if(status)
 	{
 		std::string w_buf {};
+		std::cout << "Write msg: ";
 		getline(std::cin, w_buf);
-		if(buffer[0] == '#')
+		if(w_buf == "#")
 		{
 			status = false;
 		}
@@ -36,31 +43,33 @@ void Client::writter(bool& status)
 		{
 			if(socket->getProto() == Proto::TCP)
 			{
-				write(socket->getSocketFd(), w_buf.c_str(), w_buf.length());
+				res = write(socket->getSocketFd(), w_buf.c_str(), w_buf.length());
 			}
 			else
 			{
-				sendto(socket->getSocketFd(), w_buf.c_str(), w_buf.length(), MSG_CONFIRM,
+				res = sendto(socket->getSocketFd(), w_buf.c_str(), w_buf.length(), MSG_CONFIRM,
                		(const sockaddr *) &socket->getAddr(), sizeof(socket->getAddr()));
 			}
 		}
 	}
+	status = (res != -1);
 }
 
 bool Client::listener(bool& status)
 {
-	while(status)
+	if(status)
 	{
-		memset(buffer, 0 ,BUFFER_SIZE);
+		socklen_t len = 0;
+		memset(this->buffer, 0 ,BUFFER_SIZE);
 		ssize_t nread;
 		if(socket->getProto() == Proto::TCP)
 		{
-    		nread = read(socket->getSocketFd(), buffer, BUFFER_SIZE);
+    		nread = read(socket->getSocketFd(), this->buffer, BUFFER_SIZE);
 		}
 		else
 		{
-			nread = recvfrom(socket->getSocketFd(), buffer, BUFFER_SIZE, MSG_WAITALL,
-                 (sockaddr *) &socket->getAddr(), (socklen_t *)sizeof(socket->getAddr()));
+			nread = recvfrom(socket->getSocketFd(), this->buffer, BUFFER_SIZE, MSG_WAITALL,
+                 (sockaddr *) &socket->getAddr(), &len);
 		}
 		if (nread == -1) {
 			perror("read failed");
@@ -71,7 +80,8 @@ bool Client::listener(bool& status)
 		}
 		else
 		{
-			std::cout << "Sever:" << buffer << std::endl;
+			std::cout << "Sever:" << this->buffer << std::endl;
 		}
 	}
+	return status;
 }

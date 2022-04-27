@@ -5,7 +5,7 @@
 
 int main(int argc, char const *argv[])
 {
-	ArgsWrapper argsWrapper(argc, argv);
+	ArgsWrapper argsWrapper(argc, argv, false);
 	bool isStartOk = argsWrapper.checkArgs();
 	if(isStartOk)
 	{
@@ -19,8 +19,8 @@ int main(int argc, char const *argv[])
 
 	if(isStartOk)
 	{
-		// Server server(argsWrapper.getPort());
-		// server.run();
+		Server server(argsWrapper.getTcpPort(), argsWrapper.getUdpPort());
+		server.run();
 	}
 	std::cout << "Close app" << std::endl;
 	return 0;

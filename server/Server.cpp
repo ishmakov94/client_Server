@@ -8,6 +8,12 @@ Server::Server(uint16_t portTcp, uint16_t portUdp)
 	socketUdp->_bind();
 }
 
+Server::~Server()
+{
+	delete socketTcp;
+	delete socketUdp;
+}
+
 void Server::run()
 {
 	bool status = true;
@@ -39,19 +45,21 @@ void Server::runUdp()
 	std::string w_buf {};
 	while(status)
 	{
+		sockaddr_in cliaddr {0};
+		socklen_t len = sizeof(cliaddr);
 		memset(buffer, 0, BUFFER_SIZE);
 		ssize_t nread = recvfrom(socketUdp->getSocketFd(), buffer, BUFFER_SIZE, MSG_WAITALL,
-                 (sockaddr *) &socketUdp->getAddr(), (socklen_t *)sizeof(socketUdp->getAddr()));
+                 (sockaddr *) &cliaddr, &len);
 		auto sum = findSum(buffer, nread);
 		if(sum.first)
 		{
 			w_buf = std::to_string(sum.second);
 			sendto(socketUdp->getSocketFd(), w_buf.c_str(), w_buf.length(), MSG_CONFIRM,
-               		(const sockaddr *) &socketUdp->getAddr(), sizeof(socketUdp->getAddr()));
+               		(const sockaddr *) &cliaddr, len);
 		}
 		else{
 			sendto(socketUdp->getSocketFd(), buffer, nread, MSG_CONFIRM,
-               		(const sockaddr *) &socketUdp->getAddr(), sizeof(socketUdp->getAddr()));
+               		(const sockaddr *) &cliaddr, len);
 		}
 	}
 }

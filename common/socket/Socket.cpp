@@ -18,6 +18,7 @@ Socket::Socket(uint16_t port, Proto proto)
 
 Socket::~Socket()
 {
+    printf("%s\n", __func__);
 	addr = {0};
 	close(socket_fd);
 }
