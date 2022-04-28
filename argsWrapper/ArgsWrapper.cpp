@@ -173,7 +173,7 @@ void ArgsWrapper::printHelp()
         std::cout << "Note: sould be formated X.X.X.X, where  0 <= X <= 255 (default 127.0.0.1)" << std::endl;
         std::cout << "[port]" << std::endl;
         std::cout << "\t-p (default 1024)" << std::endl;
-        std::cout << "Note: sould be mode than 1024 and less than 65535 " << std::endl;
+        std::cout << "Note: sould be mode than 1024 and less than 65535" << std::endl;
         std::cout << "Exapmles:" << std::endl;
         std::cout << "\t./client" << std::endl;
         std::cout << "\t./client -u -i 127.0.0.1 -p 1024" << std::endl;
@@ -185,7 +185,7 @@ void ArgsWrapper::printHelp()
         std::cout << "[portTcp]" << std::endl;
         std::cout << "\t-tcp-port (default 1024)" << std::endl;
         std::cout << "Note: sould be more than 1024 and less than 65535 and is not equal Udp port" << std::endl;
-        std::cout << "\t-udp-port (default 1024)" << std::endl;
+        std::cout << "\t-udp-port (default 1025)" << std::endl;
         std::cout << "Note: sould be more than 1024 and less than 65535 and is not equal Tcp port" << std::endl;
         std::cout << "Exapmles:" << std::endl;
         std::cout << "\t./server" << std::endl;
