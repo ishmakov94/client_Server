@@ -20,16 +20,20 @@ void Server::run()
 	ClientStorageManager* clientStorageManager = new ClientStorageManager();
 	std::thread storageManagerThread(&ClientStorageManager::run, clientStorageManager, std::ref(status));
 	std::thread tcpTread(&Server::runTcp, this, std::ref(status), std::ref(clientStorageManager));
-	std::thread udpThread(&Server::runUdp, this);
+	std::thread udpThread(&Server::runUdp, this, std::ref(status));
+	std::thread cmdThread(&Server::runCmd, this, std::ref(status));
+	cmdThread.join();
 	storageManagerThread.join();
 	tcpTread.join();
 	udpThread.join();
+	delete clientStorageManager;
 }
 
 void Server::runTcp(bool& status, ClientStorageManager* clientStorageManager)
 {
 	while(status)
 	{
+		sleep(2);
 		int fd = -1;
 		socketTcp->listenAndAccept(fd);
 		if(fd != -1)
@@ -38,9 +42,8 @@ void Server::runTcp(bool& status, ClientStorageManager* clientStorageManager)
 		}
 	}
 }
-void Server::runUdp()
+void Server::runUdp(bool& status)
 {
-	bool status = true;
 	char* buffer = new char[BUFFER_SIZE];
 	std::string w_buf {};
 	while(status)
@@ -62,4 +65,30 @@ void Server::runUdp()
                		(const sockaddr *) &cliaddr, len);
 		}
 	}
+}
+
+void Server::runCmd(bool& status)
+{
+	std::string cmd_buf {};
+	while(status)
+	{
+		getline(std::cin, cmd_buf);
+		if(cmd_buf == CMD_EXIT)
+		{
+			status = false;
+			std::cout << "Closing app..." << std::endl;
+		}
+		else
+		{
+			printCmdHelp();
+		}
+	}
+}
+
+void Server::printCmdHelp()
+{
+	std::cout << "====HELP====" << std::endl;
+	std::cout << "\t" << CMD_HELP << " - print cmd help" << std::endl;
+	std::cout << "\t" << CMD_EXIT << " - stop and exit server app" << std::endl;
+	std::cout << "============" << std::endl;
 }

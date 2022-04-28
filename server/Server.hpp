@@ -18,5 +18,7 @@ private:
 	Socket* socketUdp;
 	void runClientStorageManager(bool& status);
 	void runTcp(bool& status, ClientStorageManager* clientStorageManager);
-	void runUdp();
+	void runUdp(bool& status);
+	void runCmd(bool& status);
+	void printCmdHelp();
 };

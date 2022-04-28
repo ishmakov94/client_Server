@@ -14,6 +14,9 @@ Socket::Socket(uint16_t port, Proto proto)
             socket_fd = createSocket(addr.sin_family, SOCK_DGRAM, 0);
             break;
     }
+//     int flags = fcntl(socket_fd, F_GETFL, 0);
+//     flags |= O_NONBLOCK;
+//     fcntl(socket_fd, F_SETFL, flags);
 }
 
 Socket::~Socket()

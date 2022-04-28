@@ -16,4 +16,5 @@ private:
 	char* buffer;
 	void writter(bool& status);
 	bool listener(bool& status);
+	void writterAndListenerThread();
 };

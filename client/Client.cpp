@@ -10,21 +10,25 @@ Client::Client(std::string ip_addr, uint16_t port, Proto proto)
 
 Client::~Client()
 {
+	printf("%s\n", __func__);
 	delete socket;
 }
 
 void Client::run()
 {
 	bool status = true;
-	std::thread writterAndListenerThread([&status, this]()
-	{
-		while(status)
-		{
-			writter(status);
-			status = listener(status);
-		}
-	});
+	std::thread writterAndListenerThread(&Client::writterAndListenerThread, this);
 	writterAndListenerThread.join();
+}
+
+void Client::writterAndListenerThread()
+{
+	bool status = true;
+	while(status)
+	{
+		writter(status);
+		status = listener(status);
+	}
 }
 
 void Client::writter(bool& status)

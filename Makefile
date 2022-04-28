@@ -11,7 +11,6 @@ client: outDir client.o client.main.o socket argsWrapper
 server: outDir server.o server.main.o clientStorageManager socket argsWrapper
 	${CC} ${CC_FLAGS} ${BUILD}/server.main.o ${BUILD}/server.o ${BUILD}/clientStorageManager.o ${BUILD}/clientStorage.o ${BUILD}/acceptedClient.o ${BUILD}/socket.o ${BUILD}/argsWrapper.o -o ${OUT}/server
 
-
 client.main.o:
 	${CC} ${CC_FLAGS} -c client/main.cpp -o ${BUILD}/client.main.o
 
